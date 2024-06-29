@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ApiController extends Controller
 {
@@ -34,7 +35,9 @@ class ApiController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
+                'email_verified_at' => now(),
                 'password' => $request->password,
+                'remember_token' => Str::random(10),
             ]);
 
             //iki token e
@@ -51,6 +54,7 @@ class ApiController extends Controller
             ],500);
         }
     }
+
 
 
     public function Login(Request $request){
@@ -97,6 +101,8 @@ class ApiController extends Controller
         }
     }
 
+
+
     public function profile(){
         $userData = auth()->user();
 
@@ -114,6 +120,8 @@ class ApiController extends Controller
         }
     }
 
+
+
     public function logout(){
         try {
             $user= auth()->user();
@@ -126,6 +134,29 @@ class ApiController extends Controller
                 'status' => true,
                 'message' => 'User logged out successfully.',
                 'data' => []
+            ], 200);
+        } catch(\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function delete(Request $request){
+        try {
+            $user= auth()->user();
+
+            if($user instanceof \App\Models\User){
+                $user->tokens()->delete();
+                $user->delete();
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully.',
+                'data' => [],
             ], 200);
         } catch(\Throwable $th) {
             return response()->json([

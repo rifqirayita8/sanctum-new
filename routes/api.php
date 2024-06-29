@@ -17,6 +17,9 @@ Route::group([
 
     //logout
     Route::get('/logout', [ApiController::class, 'logout']);
+
+    //busek
+    Route::delete('/delete', [ApiController::class, 'delete']);
 });
 
 // Route::get('/user', function (Request $request) {
