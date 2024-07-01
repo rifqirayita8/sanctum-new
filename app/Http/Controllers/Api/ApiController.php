@@ -107,9 +107,9 @@ class ApiController extends Controller
         $user= Auth::user();
 
         $validateUser= Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'required|min:6',
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|max:255|unique:users,email,'.$user->id,
+            'password' => 'sometimes|min:6',
         ]);
 
         if($validateUser->fails()){
@@ -134,7 +134,7 @@ class ApiController extends Controller
         ], 200);
     }
 
-    
+
 
     public function profile(){
         $userData = auth()->user();
