@@ -20,6 +20,8 @@ Route::group([
 
     //busek
     Route::delete('/delete', [ApiController::class, 'delete']);
+
+    Route::patch('/update', [ApiController::class, 'update']);
 });
 
 // Route::get('/user', function (Request $request) {
