@@ -104,53 +104,94 @@ class ApiController extends Controller
 
 
     public function update(Request $request){
-        $user= Auth::user();
 
-        $validateUser= Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'sometimes|min:6',
-        ]);
+        try {
+            $user= Auth::user();
 
-        if($validateUser->fails()){
+            $validateUser= Validator::make($request->all(), [
+                'name' => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|max:255|unique:users,email,'.$user->id,
+                'password' => 'sometimes|min:6',
+            ]);
+    
+            if($validateUser->fails()){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation Error.',
+                    'errors' => $validateUser->errors(),
+                ], 422);
+            }
+    
+            $data= $request->only('name','email');
+            if($request->filled('password')){
+                $data['password']=Hash::make($request->password);
+            }
+    
+            $user->update($data);
+    
+            return response()->json([
+                'status' => true,
+                'message' => 'User updated successfully.',
+                'data' => $user,
+            ], 200);
+
+        } catch(\Throwable $th){
             return response()->json([
                 'status' => false,
-                'message' => 'Validation Error.',
-                'errors' => $validateUser->errors(),
-            ], 422);
+                'message' => 'Failed to update user.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
+    }
 
-        $data= $request->only('name','email');
-        if($request->filled('password')){
-            $data['password']=Hash::make($request->password);
+
+    
+    public function index(){
+        try {
+            $users= User::all();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User retrieve succesfully',
+                'data' => $users,
+            ], 200);
+
+        } catch(\Throwable $th){
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to retrieve users.',
+                'error' => $th->getMessage(),
+            ], 500);
         }
-
-        $user->update($data);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User updated successfully.',
-            'data' => $user,
-        ], 200);
     }
 
 
 
     public function profile(){
-        $userData = auth()->user();
+        try{
+            $userData = auth()->user();
 
-        if($userData instanceof \App\Models\User){
-            return response()->json([
-                'status' => true,
-                'message' => 'Profile Information.',
-                'data' => $userData
-            ],200);
-        } else {
+            if($userData instanceof \App\Models\User){
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Profile Information.',
+                    'data' => $userData
+                ],200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found.',
+                ],404);
+            }
+
+        } catch(\Throwable $th) {
             return response()->json([
                 'status' => false,
-                'message' => 'User not found.',
-            ],404);
+                'message' => 'Failed to retrieve user profile',
+                'error' => $th->getMessage(),
+            ], 500);
         }
+
     }
 
 
@@ -168,6 +209,7 @@ class ApiController extends Controller
                 'message' => 'User logged out successfully.',
                 'data' => []
             ], 200);
+
         } catch(\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -175,6 +217,7 @@ class ApiController extends Controller
             ], 500);
         }
     }
+
 
 
     public function delete(Request $request){
@@ -191,6 +234,7 @@ class ApiController extends Controller
                 'message' => 'User deleted successfully.',
                 'data' => [],
             ], 200);
+            
         } catch(\Throwable $th) {
             return response()->json([
                 'status' => false,
