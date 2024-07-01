@@ -22,6 +22,9 @@ Route::group([
     Route::delete('/delete', [ApiController::class, 'delete']);
 
     Route::patch('/update', [ApiController::class, 'update']);
+
+    Route::get('/index', [ApiController::class, 'index']);
+    
 });
 
 // Route::get('/user', function (Request $request) {
