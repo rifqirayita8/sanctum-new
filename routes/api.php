@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Middleware\AdminRole;
 
 //Register
 
@@ -23,8 +24,8 @@ Route::group([
 
     Route::patch('/update', [ApiController::class, 'update']);
 
-    Route::get('/index', [ApiController::class, 'index']);
-    
+    Route::get('/index', [ApiController::class, 'index'])->middleware(AdminRole::class);
+
 });
 
 // Route::get('/user', function (Request $request) {
