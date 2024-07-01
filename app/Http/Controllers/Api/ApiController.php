@@ -19,7 +19,7 @@ class ApiController extends Controller
             $validateUser= Validator::make($request->all(),
             [
                 'name' => 'required',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'required|email|max:255|unique:users,email',
                 'password' => 'required|min:6',
             ]);
 
@@ -28,7 +28,7 @@ class ApiController extends Controller
                     'status' => false,
                     'message' => 'Validation Error.',
                     'errors' => $validateUser->errors()
-                ],401);
+                ],422);
             }
 
             //iki create model user e
@@ -71,7 +71,7 @@ class ApiController extends Controller
                     'status' => false,
                     'message' => 'Validation Error.',
                     'errors' => $validateUser->errors()
-                ],401);
+                ],422);
             }
 
             //iki auth e
@@ -102,6 +102,39 @@ class ApiController extends Controller
     }
 
 
+
+    public function update(Request $request){
+        $user= Auth::user();
+
+        $validateUser= Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'password' => 'required|min:6',
+        ]);
+
+        if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation Error.',
+                'errors' => $validateUser->errors(),
+            ], 422);
+        }
+
+        $data= $request->only('name','email');
+        if($request->filled('password')){
+            $data['password']=Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'User updated successfully.',
+            'data' => $user,
+        ], 200);
+    }
+
+    
 
     public function profile(){
         $userData = auth()->user();
