@@ -15,7 +15,16 @@ class AdminRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user() && $request->user()->role !== 'admin'){
+        if(!$request->user()){
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized, please login first.'
+            ], 401);
+        }
+
+
+
+        if($request->user()->role !== 'admin'){
             return response()->json([
                 'message' => 'Unauthorized, only admin can access this.',
             ], 403);

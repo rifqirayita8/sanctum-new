@@ -5,27 +5,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Middleware\AdminRole;
 
-//Register
-
+//ApiController
 Route::post('/register', [ApiController::class, 'register']);
 Route::post('/login', [ApiController::class, 'login']);
-
 Route::group([
     "middleware" => ["auth:sanctum"]
 ],function(){
-    //profile
     Route::get('/profile', [ApiController::class, 'profile']);
-
-    //logout
     Route::get('/logout', [ApiController::class, 'logout']);
-
-    //busek
     Route::delete('/delete', [ApiController::class, 'delete']);
-
     Route::patch('/update', [ApiController::class, 'update']);
-
     Route::get('/index', [ApiController::class, 'index'])->middleware(AdminRole::class);
+});
 
+//DosenController
+Route::group([
+    "middleware" => ["auth:sanctum"]
+], function(){
+    Route::post('/dosen/register', [DosenController::class, 'register'])->middleware(AdminRole::class);
+    Route::post('/dosen/login', [DosenController::class, 'login']);
 });
 
 // Route::get('/user', function (Request $request) {
