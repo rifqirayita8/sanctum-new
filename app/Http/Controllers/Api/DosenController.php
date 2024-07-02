@@ -33,6 +33,7 @@ class DosenController extends Controller
                 'email_verified_at' => now(),
                 'password' => $request->password,
                 'remember_token' => Str::random(10),
+                'role' => 'dosen',
             ]);
 
             return response()->json([
