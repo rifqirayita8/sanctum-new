@@ -36,7 +36,7 @@ class ApiController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'email_verified_at' => now(),
-                'password' => $request->password,
+                'password' => Hash::make($request->password),
                 'remember_token' => Str::random(10),
                 'role' => 'mahasiswa',
             ]);
