@@ -38,6 +38,7 @@ class ApiController extends Controller
                 'email_verified_at' => now(),
                 'password' => $request->password,
                 'remember_token' => Str::random(10),
+                'role' => 'mahasiswa',
             ]);
 
             //iki token e
@@ -219,8 +220,7 @@ class ApiController extends Controller
     }
 
 
-
-    public function delete(Request $request){
+    public function delete(){
         try {
             $user= auth()->user();
 

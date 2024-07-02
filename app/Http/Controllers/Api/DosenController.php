@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class DosenController extends Controller
 {
-    public function Register(Request $request){
+    public function register(Request $request){
         try {
             $validateUser = Validator::make($request->all(),
             [
@@ -52,7 +52,7 @@ class DosenController extends Controller
     }
 
 
-    public function Login(Request $request){
+    public function login(Request $request){
         try {
             $validateUser = Validator::make($request->all(),
             [
@@ -85,6 +85,96 @@ class DosenController extends Controller
             ], 200);
 
         }catch(\Throwable $th){
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function logout(){
+        try {
+            $user = auth()->user();
+
+            if ($user instanceof \App\Models\User) {
+                $user->tokens()->delete();
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User logged out succesfully',
+                'data' => [],
+            ], 200);
+        }
+
+        catch(\Throwable $th){
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function delete($id){
+        try {
+            $user = User::find($id);
+            if(!$user){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found.',
+                ], 404);
+            }      
+
+            $user->tokens()->delete();
+            $user->delete();
+        
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully.',
+                'data' => [],
+            ], 200);
+
+        } catch(\Throwable $th){
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function indexDosen(){
+        try {
+            $user = User::where('role', 'dosen')->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'List Dosen',
+                'data' => $user,
+            ], 200);
+
+        } catch(\Throwable $th){
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
+
+    public function indexMhs(){
+        try {
+            $user = User::where('role', 'mahasiswa')->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'List Mahasiswa',
+                'data' => $user,
+            ], 200);
+
+        } catch(\Throwable $th){
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
