@@ -57,8 +57,7 @@ class DosenController extends Controller
         try {
             $validateUser = Validator::make($request->all(),
             [
-                'name' => 'required',
-                'email' => 'required|email|max:255|unique:users,email',
+                'email' => 'required|email|max:255',
                 'password' => 'required|min:6',
             ]);
 
@@ -92,6 +91,7 @@ class DosenController extends Controller
             ], 500);
         }
     }
+
 
 
     public function logout(){
