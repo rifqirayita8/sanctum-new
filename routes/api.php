@@ -28,7 +28,7 @@ Route::group([
     Route::get('/dosen/indexMhs', [DosenController::class, 'indexMhs']);
     Route::get('/dosen/indexDosen', [DosenController::class, 'indexDosen']);
     Route::get('/dosen/logout', [DosenController::class, 'logout']);
-    Route::delete('/dosen/delete{id}', [DosenController::class, 'delete'])->middleware(AdminRole::class);
+    Route::delete('/dosen/delete/{id}', [DosenController::class, 'delete'])->middleware(AdminRole::class);
 });
 
 // Route::get('/user', function (Request $request) {
