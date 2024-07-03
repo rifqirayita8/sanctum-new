@@ -20,11 +20,15 @@ Route::group([
 });
 
 //DosenController
+Route::post('/dosen/register', [DosenController::class, 'register'])->middleware(AdminRole::class);
+Route::post('/dosen/login', [DosenController::class, 'login']);
 Route::group([
     "middleware" => ["auth:sanctum"]
 ], function(){
-    Route::post('/dosen/register', [DosenController::class, 'register'])->middleware(AdminRole::class);
-    Route::post('/dosen/login', [DosenController::class, 'login']);
+    Route::get('/dosen/indexMhs', [DosenController::class, 'indexMhs']);
+    Route::get('/dosen/indexDosen', [DosenController::class, 'indexDosen']);
+    Route::get('/dosen/logout', [DosenController::class, 'logout']);
+    Route::delete('/dosen/delete{id}', [DosenController::class, 'delete'])->middleware(AdminRole::class);
 });
 
 // Route::get('/user', function (Request $request) {
