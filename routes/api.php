@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\DosenController;
+use App\Http\Controllers\TokenHashCheck;
 use App\Http\Middleware\AdminRole;
 use App\Http\Middleware\AntiDosen;
 
@@ -29,6 +30,9 @@ Route::group([
     Route::get('/dosen/indexDosen', [DosenController::class, 'indexDosen']);
     Route::delete('/dosen/delete/{id}', [DosenController::class, 'delete'])->middleware(AdminRole::class);
 }); 
+
+
+Route::get('/verify', [TokenHashCheck::class, 'verifyToken']);
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();

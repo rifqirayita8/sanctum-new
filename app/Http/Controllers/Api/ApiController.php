@@ -197,12 +197,12 @@ class ApiController extends Controller
 
 
 
-    public function logout(Request $request){
+    public function logout(){
         try {
             $user= auth()->user();
 
             if ($user instanceof \App\Models\User) {
-                $user->$request->user()->currentAccessToken()->delete();
+                $user->currentAccessToken()->delete();
             }
 
             return response()->json([
