@@ -19,6 +19,7 @@ Route::group([
     Route::delete('/delete', [ApiController::class, 'delete'])->middleware(AntiDosen::class);
     Route::patch('/update', [ApiController::class, 'update'])->middleware(AntiDosen::class);
     Route::get('/index', [ApiController::class, 'index'])->middleware(AdminRole::class);
+    Route::get('/showCurrent', [ApiController::class, 'showCurrent']);
 });
 
 //DosenController
