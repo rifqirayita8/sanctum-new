@@ -242,4 +242,12 @@ class ApiController extends Controller
             ], 500);
         }
     }
+
+    public function getCurrentUser(Request $request) {
+        $user = Auth::user();
+
+        return response()->json([
+            'name' => $user->name,
+        ]);
+    }
 }
