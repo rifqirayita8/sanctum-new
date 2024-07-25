@@ -18,9 +18,23 @@ class ApiController extends Controller
         try{
             $validateUser= Validator::make($request->all(),
             [
-                'name' => 'required',
+                'name' => 'required|max:255',
                 'email' => 'required|email|max:255|unique:users,email',
-                'password' => 'required|min:6',
+                'password' => [
+                    'required',
+                    'min: 8',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/',
+                    'regex:/[0-9]/',
+                ],
+            ], [
+                'name.required' => 'Name is required.',
+                'email.required' => 'Email is required',
+                'email.email' => 'Email is not valid',
+                'email.unique' => 'Email is already taken',
+                'password.required' => 'Password is required',
+                'password.min' => 'Password must be at least 8 characters',
+                'password.regex' => 'Password must contain at least one uppercase, one lowercase, and one number',
             ]);
 
             if($validateUser->fails()){
