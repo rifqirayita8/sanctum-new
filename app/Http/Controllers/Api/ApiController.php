@@ -78,7 +78,11 @@ class ApiController extends Controller
             $validateUser= Validator::make($request->all(),
             [
                 'email' => 'required|email',
-                'password' => 'required|min:6',
+                'password' => 'required',
+            ], [
+                'email.required' => 'Email cannot be empty.',
+                'email.email' => 'Email is not valid',
+                'password.required' => 'Password cannot be empty.',
             ]);
 
             if($validateUser->fails()){
