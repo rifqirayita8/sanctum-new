@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -14,10 +13,38 @@ use Illuminate\Support\Str;
 
 class ApiController extends Controller
 {
-    public function Register(RegisterRequest $request){
+    public function Register(Request $request){
 
         //iki validator
         try{
+            $validateUser= Validator::make($request->all(),
+            [
+                'name' => 'required|max:255',
+                'email' => 'required|email|max:255|unique:users,email',
+                'password' => [
+                    'required',
+                    Password::min(8)
+                        ->mixedCase()
+                        ->letters()
+                        ->numbers()],
+            ], [
+                'name.required' => 'Name is required.',
+                'email.required' => 'Email is required',
+                'email.email' => 'Email is not valid',
+                'email.unique' => 'Email is already taken',
+                'password.required' => 'Password is required',
+                'password.min' => 'Password must be at least 8 characters',
+                'password.regex' => 'Password must contain at least one uppercase, one lowercase, and one number',
+            ]);
+
+            if($validateUser->fails()){
+                return response() -> json([
+                    'status' => false,
+                    'message' => 'Validation Error.',
+                    'errors' => $validateUser->errors()
+                ],422);
+            }
+
             //iki create model user e
             $user = User::create([
                 'name' => $request->name,
