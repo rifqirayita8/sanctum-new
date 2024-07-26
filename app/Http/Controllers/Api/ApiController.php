@@ -17,8 +17,7 @@ class ApiController extends Controller
 
         //iki validator
         try{
-            $validateUser= Validator::make($request->all(),
-            [
+            $rules = [
                 'name' => 'required|max:255',
                 'email' => 'required|email|max:255|unique:users,email',
                 'password' => [
@@ -28,7 +27,9 @@ class ApiController extends Controller
                     'regex:/[A-Z]/',
                     'regex:/[0-9]/',
                 ],
-            ], [
+            ]; 
+            
+            $messages= [
                 'name.required' => 'Name is required.',
                 'email.required' => 'Email is required',
                 'email.email' => 'Email is not valid',
@@ -36,12 +37,14 @@ class ApiController extends Controller
                 'password.required' => 'Password is required',
                 'password.min' => 'Password must be at least 8 characters',
                 'password.regex' => 'Password must contain at least one uppercase, one lowercase, and one number',
-            ]);
+            ];
+
+            $validateUser= Validator::make($request->all(), $rules, $messages);
 
             if($validateUser->fails()){
                 return response() -> json([
                     'status' => false,
-                    'message' => 'Validation Error.',
+                    'message' => $messages,
                     'errors' => $validateUser->errors()
                 ],422);
             }
