@@ -44,7 +44,7 @@ class ApiController extends Controller
             if($validateUser->fails()){
                 return response() -> json([
                     'status' => false,
-                    'message' => $messages,
+                    'message' => $validateUser->messages(),
                     'errors' => $validateUser->errors()
                 ],422);
             }
