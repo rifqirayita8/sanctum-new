@@ -79,21 +79,25 @@ class ApiController extends Controller
     public function Login(Request $request){
         try{
             //iki validator 
-            $validateUser= Validator::make($request->all(),
+            $rules= 
             [
                 'email' => 'required|email',
                 'password' => 'required',
-            ], 
+            ];
+
+            $messages =
             [
                 'email.required' => 'Email cannot be empty.',
                 'email.email' => 'Email is not valid',
                 'password.required' => 'Password cannot be empty.',
-            ]);
+            ];
+
+            $validateUser = Validator::make($request->all(), $rules, $messages);
 
             if($validateUser->fails()){
                 return response() -> json([
                     'status' => false,
-                    'message' => 'Validation Error.',
+                    'message' => implode(', ',$validateUser->errors()->all()),
                     'errors' => $validateUser->errors()
                 ],422);
             }
