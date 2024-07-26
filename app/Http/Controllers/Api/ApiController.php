@@ -23,10 +23,11 @@ class ApiController extends Controller
                 'email' => 'required|email|max:255|unique:users,email',
                 'password' => [
                     'required',
-                    Password::min(8)
-                        ->mixedCase()
-                        ->letters()
-                        ->numbers()],
+                    'min:8',
+                    'regex:/[a-z]/',
+                    'regex:/[A-Z]/',
+                    'regex:/[0-9]/',
+                ],
             ], [
                 'name.required' => 'Name is required.',
                 'email.required' => 'Email is required',
@@ -79,7 +80,8 @@ class ApiController extends Controller
             [
                 'email' => 'required|email',
                 'password' => 'required',
-            ], [
+            ], 
+            [
                 'email.required' => 'Email cannot be empty.',
                 'email.email' => 'Email is not valid',
                 'password.required' => 'Password cannot be empty.',
